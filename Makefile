@@ -25,8 +25,8 @@ LDFLAGS=
 
 $(GLTFPACK_OBJECTS): CXXFLAGS+=-std=c++11
 
-WASMCC=clang++
-WASI_SDK=
+WASMCC=${WASM_CC}
+WASI_SDK=${WASI_SYSROOT}
 
 WASM_FLAGS=--target=wasm32-wasi --sysroot=$(WASI_SDK)
 WASM_FLAGS+=-O3 -DNDEBUG -nostartfiles -nostdlib -Wl,--no-entry -Wl,-s
