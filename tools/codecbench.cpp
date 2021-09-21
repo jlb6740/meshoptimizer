@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "../sightglass.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -103,8 +104,8 @@ void benchCodecs(const std::vector<Vertex>& vertices, const std::vector<unsigned
 
 			if (verbose)
 				printf("decode: vertex %.2f ms (%.2f GB/sec), index %.2f ms (%.2f GB/sec)\n",
-				       (t1 - t0) * 1000, double(vertices.size() * sizeof(Vertex)) / GB / (t1 - t0),
-				       (t2 - t1) * 1000, double(indices.size() * 4) / GB / (t2 - t1));
+				    (t1 - t0) * 1000, double(vertices.size() * sizeof(Vertex)) / GB / (t1 - t0),
+				    (t2 - t1) * 1000, double(indices.size() * 4) / GB / (t2 - t1));
 
 			if (pass == 0)
 			{
@@ -149,10 +150,10 @@ void benchFilters(size_t count, double& besto8, double& besto12, double& bestq12
 
 		if (verbose)
 			printf("filter: oct8 %.2f ms (%.2f GB/sec), oct12 %.2f ms (%.2f GB/sec), quat12 %.2f ms (%.2f GB/sec), exp %.2f ms (%.2f GB/sec)\n",
-			       (t1 - t0) * 1000, double(d4.size()) / GB / (t1 - t0),
-			       (t2 - t1) * 1000, double(d8.size()) / GB / (t2 - t1),
-			       (t3 - t2) * 1000, double(d8.size()) / GB / (t3 - t2),
-			       (t4 - t3) * 1000, double(d8.size()) / GB / (t4 - t3));
+			    (t1 - t0) * 1000, double(d4.size()) / GB / (t1 - t0),
+			    (t2 - t1) * 1000, double(d8.size()) / GB / (t2 - t1),
+			    (t3 - t2) * 1000, double(d8.size()) / GB / (t3 - t2),
+			    (t4 - t3) * 1000, double(d8.size()) / GB / (t4 - t3));
 
 		besto8 = std::max(besto8, double(d4.size()) / GB / (t1 - t0));
 		besto12 = std::max(besto12, double(d8.size()) / GB / (t2 - t1));
@@ -161,7 +162,11 @@ void benchFilters(size_t count, double& besto8, double& besto12, double& bestq12
 	}
 }
 
+#ifdef NATIVE_ENGINE
+int native_entry(int argc, char** argv)
+#else
 int main(int argc, char** argv)
+#endif
 {
 	meshopt_encodeIndexVersion(1);
 
@@ -212,13 +217,15 @@ int main(int argc, char** argv)
 		}
 	}
 
+	bench_start();
 	double bestvd = 0, bestid = 0;
 	benchCodecs(vertices, indices, bestvd, bestid, verbose);
 
 	double besto8 = 0, besto12 = 0, bestq12 = 0, bestexp = 0;
 	benchFilters(8 * N * N, besto8, besto12, bestq12, bestexp, verbose);
+	bench_end();
 
 	printf("Algorithm   :\tvtx\tidx\toct8\toct12\tquat12\texp\n");
 	printf("Score (GB/s):\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n",
-	       bestvd, bestid, besto8, besto12, bestq12, bestexp);
+	    bestvd, bestid, besto8, besto12, bestq12, bestexp);
 }
