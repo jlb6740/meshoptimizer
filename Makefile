@@ -19,8 +19,8 @@ OBJECTS=$(LIBRARY_OBJECTS) $(DEMO_OBJECTS) $(GLTFPACK_OBJECTS)
 LIBRARY=$(BUILD)/libmeshoptimizer.a
 DEMO=$(BUILD)/meshoptimizer
 
-CFLAGS=-g -Wall -Wextra -Werror -std=c89
-CXXFLAGS=-g -Wall -Wextra -Wshadow -Wno-missing-field-initializers -Werror -std=c++98
+CFLAGS=-g -Wall -Wextra  -std=c89
+CXXFLAGS=-g -Wall -Wextra -Wshadow -Wno-missing-field-initializers -std=c++11
 LDFLAGS=
 
 $(GLTFPACK_OBJECTS): CXXFLAGS+=-std=c++11
@@ -142,7 +142,7 @@ vcachetuner: tools/vcachetuner.cpp $(BUILD)/tools/meshloader.cpp.o $(BUILD)/demo
 	$(CXX) $^ -fopenmp $(CXXFLAGS) -std=c++11 $(LDFLAGS) -o $@
 
 codecbench: tools/codecbench.cpp $(LIBRARY)
-	$(CXX) $^ $(CXXFLAGS) $(LDFLAGS) -o $@
+	$(CXX) $^ -std=c++11 $(CXXFLAGS) $(LDFLAGS) -o $@
 
 codecbench.js: tools/codecbench.cpp ${LIBRARY_SOURCES}
 	emcc $^ -O3 -g -DNDEBUG -s TOTAL_MEMORY=268435456 -s SINGLE_FILE=1 -o $@
