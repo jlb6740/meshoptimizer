@@ -235,7 +235,8 @@ int main(int argc, char** argv)
 		indices.push_back(index);
 	}
 
-
+	fprintf(stderr, "AAbout to Start *******");
+	printf("About to Start *******");
 	bench_start();
 	double bestvd = 0, bestid = 0;
 	benchCodecs(vertices, indices, bestvd, bestid, verbose);
